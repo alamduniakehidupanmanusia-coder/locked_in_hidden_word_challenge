@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locked In — Hidden Word Challenge</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        fun: ['Fredoka', 'sans-serif']
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-fun { font-family: 'Fredoka', cursive, sans-serif; }
+        .letter-box {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop { animation: popIn 0.3s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-indigo-50/40 to-cyan-50/40 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
+
+    <header class="w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm border-b border-indigo-100 dark:border-slate-800 py-3.5 px-4 md:px-8 flex justify-between items-center z-30 sticky top-0">
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="window.switchScreen('welcome')">
+            <div class="bg-gradient-to-tr from-indigo-600 to-cyan-500 text-white p-2.5 rounded-2xl shadow-md flex items-center justify-center">
+                <i class="fa-solid fa-key text-lg"></i>
+            </div>
+            <div>
+                <h1 class="text-lg md:text-xl font-fun font-bold bg-gradient-to-r from-indigo-600 to-cyan-500 bg-clip-text text-transparent">Locked In</h1>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Hidden Word Challenge</p>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-2.5">
+            <!-- Journal Button -->
+            <button onclick="window.openJournal()" class="px-3 py-2 text-xs font-semibold bg-indigo-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 rounded-xl hover:bg-indigo-100 transition flex items-center space-x-1.5" title="Learning Journal">
+                <i class="fa-solid fa-book-open"></i>
+                <span class="hidden sm:inline" id="nav-journal">Journal</span>
+            </button>
+
+            <!-- Language Toggle -->
+            <button onclick="window.toggleLanguage()" class="px-3 py-2 text-xs font-semibold bg-indigo-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 rounded-xl hover:bg-indigo-100 transition flex items-center space-x-1">
+                <i class="fa-solid fa-globe"></i>
+                <span id="lang-label">EN / ID</span>
+            </button>
+
+            <!-- Theme Toggle -->
+            <button onclick="window.toggleTheme()" class="p-2 text-xs font-semibold bg-indigo-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 rounded-xl hover:bg-indigo-100 transition">
+                <i id="theme-icon" class="fa-solid fa-moon"></i>
+            </button>
+
+            <!-- Settings Button -->
+            <button onclick="window.openSettingsModal()" class="p-2 text-xs font-semibold bg-indigo-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 rounded-xl hover:bg-indigo-100 transition" title="Settings">
+                <i class="fa-solid fa-gear"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-5xl w-full mx-auto p-4 md:p-6 flex flex-col justify-center items-center">
+
+        <!-- 1. WELCOME SCREEN -->
+        <div id="screen-welcome" class="w-full max-w-2xl bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-indigo-100/80 dark:border-slate-800 p-6 md:p-10 flex flex-col items-center text-center space-y-6 transition-all">
+            <div class="w-20 h-20 bg-gradient-to-tr from-indigo-600 to-cyan-400 rounded-3xl shadow-xl flex items-center justify-center text-white text-3xl mb-1 animate-bounce">
+                <i class="fa-solid fa-puzzle-piece"></i>
+            </div>
+            
+            <div class="space-y-2">
+                <h2 class="font-fun text-3xl md:text-4xl font-bold text-slate-900 dark:text-white" id="welcome-title">Locked In — Hidden Word Challenge</h2>
+                <p class="text-sm md:text-base text-slate-600 dark:text-slate-300 max-w-lg mx-auto" id="welcome-tagline">Find the shorter hidden words that appear in consecutive letter sequence inside the master host word!</p>
+            </div>
+
+            <!-- Student Identity Registration Form -->
+            <div class="w-full bg-slate-50 dark:bg-slate-800/60 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 text-left space-y-3">
+                <h4 class="font-fun font-bold text-xs uppercase tracking-wider text-indigo-600 dark:text-indigo-400 flex items-center space-x-2">
+                    <i class="fa-solid fa-id-card"></i>
+                    <span id="txt-form-title">Student / Player Identity</span>
+                </h4>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-300 mb-1" id="lbl-name">Full Name *</label>
+                        <input type="text" id="input-name" placeholder="e.g. Budi Santoso" class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-300 mb-1" id="lbl-class">Class / Grade *</label>
+                        <input type="text" id="input-class" placeholder="e.g. VIII-A / Grade 8" class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-indigo-500">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-300 mb-1" id="lbl-absent">Attendance No. *</label>
+                        <input type="number" id="input-absent" placeholder="e.g. 05" class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-300 mb-1" id="lbl-school">School / Madrasah *</label>
+                        <input type="text" id="input-school" placeholder="e.g. MTsN 1 Malang" class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-white focus:outline-none focus:border-indigo-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Mode & Difficulty Selectors -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+                <div class="space-y-1.5 text-left">
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400" id="lbl-difficulty">Difficulty Level</label>
+                    <select id="select-difficulty" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 focus:outline-none focus:border-indigo-500">
+                        <option value="easy">Easy (Min 3 letters, simpler words)</option>
+                        <option value="medium" selected>Medium (Standard vocabulary)</option>
+                        <option value="hard">Hard (Min 4 letters, complex words)</option>
+                    </select>
+                </div>
+                <div class="space-y-1.5 text-left">
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400" id="lbl-game-mode">Game Mode</label>
+                    <select id="select-mode" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 focus:outline-none focus:border-indigo-500">
+                        <option value="practice">Practice Mode (No Timer)</option>
+                        <option value="timed" selected>Timed Challenge (90 Seconds)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-3 w-full pt-2">
+                <button onclick="window.startGame()" class="flex-1 py-3.5 px-6 bg-gradient-to-r from-indigo-600 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 text-white font-fun font-bold text-base rounded-2xl shadow-lg shadow-indigo-500/25 transition transform active:scale-95 flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-play"></i>
+                    <span id="btn-start-game">Start Challenge</span>
+                </button>
+                <button onclick="window.openHowToPlay()" class="py-3.5 px-5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold rounded-2xl text-xs transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-circle-question"></i>
+                    <span id="btn-how-to-play">How to Play</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. GAMEPLAY DASHBOARD SCREEN -->
+        <div id="screen-game" class="w-full max-w-3xl hidden flex-col space-y-5 animate-pop">
+            
+            <!-- Top Status Bar -->
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-3xl shadow-sm border border-indigo-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-fun font-bold flex items-center justify-center text-base" id="round-number-badge">
+                        R1
+                    </div>
+                    <div>
+                        <div class="text-[10px] uppercase tracking-wider font-bold text-slate-400" id="txt-status-player">Player</div>
+                        <div id="hud-player-name" class="font-fun font-bold text-sm text-slate-700 dark:text-slate-200">Budi Santoso</div>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <div class="text-center">
+                        <div class="text-[10px] uppercase tracking-wider font-bold text-slate-400" id="txt-status-score">Score</div>
+                        <div id="hud-score" class="font-fun font-bold text-base text-indigo-600 dark:text-indigo-400">0</div>
+                    </div>
+                    <div class="text-center" id="timer-wrapper">
+                        <div class="text-[10px] uppercase tracking-wider font-bold text-slate-400" id="txt-status-timer">Time</div>
+                        <div id="hud-timer" class="font-fun font-bold text-base text-cyan-600 dark:text-cyan-400">90s</div>
+                    </div>
+                    <button onclick="window.quitToMenu()" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl transition" title="Quit to Menu">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Host Word Display Area -->
+            <div class="bg-white dark:bg-slate-900 p-6 md:p-8 rounded-3xl shadow-xl border border-indigo-100/80 dark:border-slate-800 flex flex-col items-center text-center relative overflow-hidden">
+                <div class="absolute top-3 left-4 text-[11px] font-semibold text-slate-400 uppercase tracking-widest flex items-center space-x-1.5">
+                    <i class="fa-solid fa-bullseye text-indigo-500"></i>
+                    <span id="txt-host-label">Master Host Word</span>
+                </div>
+
+                <!-- Host Word Letters Container -->
+                <div id="host-word-container" class="flex flex-wrap justify-center gap-2 my-6">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <!-- Input & Action Controls -->
+                <div class="w-full max-w-md space-y-3">
+                    <div class="relative flex items-center">
+                        <input type="text" id="word-input" autocomplete="off" placeholder="Type a hidden word..." class="w-full pl-4 pr-24 py-3.5 bg-slate-50 dark:bg-slate-800 border-2 border-indigo-100 dark:border-slate-700 rounded-2xl text-sm font-semibold text-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition shadow-inner">
+                        <button onclick="window.submitWord()" class="absolute right-1.5 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-fun font-bold text-xs rounded-xl shadow-md transition flex items-center space-x-1.5">
+                            <i class="fa-solid fa-check"></i>
+                            <span id="btn-submit">Submit</span>
+                        </button>
+                    </div>
+
+                    <!-- Secondary Control Buttons -->
+                    <div class="flex justify-between items-center text-xs">
+                        <button onclick="window.useHint()" class="px-3 py-1.5 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-900/50 rounded-xl hover:bg-amber-100 transition flex items-center space-x-1 font-semibold">
+                            <i class="fa-solid fa-lightbulb"></i>
+                            <span id="btn-hint">Hint</span>
+                            <span id="hint-count-badge" class="bg-amber-200 dark:bg-amber-800 px-1.5 py-0.2 rounded-full text-[10px]">3</span>
+                        </button>
+
+                        <div class="text-slate-500 dark:text-slate-400 font-medium">
+                            <span id="txt-found-count">Found:</span> <strong id="found-words-count" class="text-indigo-600 dark:text-indigo-400">0</strong> / <strong id="target-words-count">4</strong>
+                        </div>
+
+                        <button onclick="window.skipRound()" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-xl hover:bg-slate-200 transition font-semibold">
+                            <span id="btn-skip">Skip Round</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Feedback Toast Banner -->
+                <div id="feedback-toast" class="mt-4 w-full max-w-md p-3 rounded-2xl text-xs font-medium hidden transition-all">
+                    <!-- Dynamic feedback message -->
+                </div>
+            </div>
+
+            <!-- Found Hidden Words Grid -->
+            <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl shadow-sm border border-indigo-100 dark:border-slate-800">
+                <h4 class="font-fun font-bold text-xs text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-3 flex items-center space-x-2">
+                    <i class="fa-solid fa-list-check text-cyan-500"></i>
+                    <span id="txt-discovered-title">Discovered Hidden Words</span>
+                </h4>
+                <div id="found-words-grid" class="flex flex-wrap gap-2 min-h-[50px] items-center">
+                    <span class="text-xs text-slate-400 italic" id="txt-no-words-yet">No hidden words found yet. Start typing above!</span>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    
+    <!-- 1. ROUND SUMMARY MODAL -->
+    <div id="modal-summary" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl border border-indigo-100 dark:border-slate-800 p-6 text-center space-y-5 animate-pop">
+            <div class="w-16 h-16 bg-gradient-to-tr from-emerald-500 to-cyan-400 rounded-2xl shadow-lg flex items-center justify-center text-white text-2xl mx-auto">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+            
+            <div class="space-y-1">
+                <h3 class="font-fun text-2xl font-bold text-slate-900 dark:text-white" id="summary-title">Round Completed!</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400" id="summary-subtitle">Great job finding the hidden words.</p>
+            </div>
+
+            <!-- Stats Box -->
+            <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl grid grid-cols-3 gap-2 text-center border border-slate-200 dark:border-slate-700">
+                <div>
+                    <div class="text-[10px] text-slate-400 uppercase font-bold" id="lbl-sum-found">Found</div>
+                    <div id="sum-found-val" class="font-fun font-bold text-lg text-indigo-600 dark:text-indigo-400">4/4</div>
+                </div>
+                <div>
+                    <div class="text-[10px] text-slate-400 uppercase font-bold" id="lbl-sum-score">Score</div>
+                    <div id="sum-score-val" class="font-fun font-bold text-lg text-cyan-600 dark:text-cyan-400">+50</div>
+                </div>
+                <div>
+                    <div class="text-[10px] text-slate-400 uppercase font-bold" id="lbl-sum-accuracy">Accuracy</div>
+                    <div id="sum-accuracy-val" class="font-fun font-bold text-lg text-emerald-600 dark:text-emerald-400">100%</div>
+                </div>
+            </div>
+
+            <!-- Review missed words -->
+            <div class="text-left space-y-1.5">
+                <h5 class="text-xs font-semibold text-slate-600 dark:text-slate-300" id="txt-review-missed">All Valid Hidden Words:</h5>
+                <div id="sum-word-list" class="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto p-2 bg-slate-100 dark:bg-slate-800 rounded-xl">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <div class="flex gap-2.5 pt-2">
+                <button onclick="window.nextRound()" class="flex-1 py-3 bg-gradient-to-r from-indigo-600 to-cyan-500 text-white font-fun font-bold text-sm rounded-2xl shadow-lg transition hover:opacity-95 flex items-center justify-center space-x-2">
+                    <span id="btn-next-round">Next Round</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                <button onclick="window.switchScreen('welcome')" class="py-3 px-4 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-xs rounded-2xl hover:bg-slate-200 transition">
+                    <span id="btn-home">Home</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. WORD LEARNING JOURNAL MODAL -->
+    <div id="modal-journal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-3xl shadow-2xl border border-indigo-100 dark:border-slate-800 overflow-hidden flex flex-col max-h-[85vh]">
+            <div class="bg-gradient-to-r from-indigo-600 to-cyan-500 p-5 text-white flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-white/20 p-2.5 rounded-2xl">
+                        <i class="fa-solid fa-book-open text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-fun font-bold text-lg" id="journal-heading">Word Learning Journal</h3>
+                        <p class="text-xs text-indigo-100" id="journal-subheading">Review vocabulary you've unlocked during your challenges</p>
+                    </div>
+                </div>
+                <button onclick="window.closeJournal()" class="p-2 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-xl transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto space-y-3 flex-1" id="journal-entries-container">
+                <!-- Dynamically populated entries -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. CERTIFICATE OF ACHIEVEMENT MODAL -->
+    <div id="modal-certificate" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md hidden items-center justify-center p-4 z-50 overflow-y-auto">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-3xl rounded-3xl shadow-2xl border border-indigo-100 dark:border-slate-800 overflow-hidden flex flex-col my-8">
+            <div class="bg-gradient-to-r from-indigo-600 to-cyan-500 p-6 text-white flex justify-between items-center">
+                <div>
+                    <h3 class="font-fun font-bold text-2xl" id="cert-heading">Certificate of Achievement</h3>
+                    <p class="text-xs text-indigo-100" id="cert-subheading">Awarded for excellence in vocabulary mastery</p>
+                </div>
+                <button onclick="window.closeCertificate()" class="p-2.5 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-2xl transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Certificate Visual Preview -->
+            <div class="p-6 bg-slate-100 dark:bg-slate-950 flex flex-col items-center">
+                <div id="certificate-preview" class="w-full aspect-[1.414/1] bg-white text-slate-800 rounded-2xl shadow-2xl p-8 border-8 border-amber-400 relative flex flex-col justify-between items-center text-center overflow-hidden">
+                    <div class="absolute inset-0 opacity-5 pointer-events-none bg-[radial-gradient(#4f46e5_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                    
+                    <div class="flex items-center justify-between w-full border-b-2 border-amber-200 pb-3">
+                        <div class="flex items-center space-x-2 text-indigo-600">
+                            <i class="fa-solid fa-key text-2xl"></i>
+                            <span class="font-fun font-bold text-sm tracking-widest uppercase">Locked In Academy</span>
+                        </div>
+                        <div class="text-xs font-semibold text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+                            Official Recognition
+                        </div>
+                    </div>
+
+                    <div class="my-auto space-y-3">
+                        <h4 class="font-serif italic text-xs text-slate-500 uppercase tracking-widest" id="txt-cert-to">This certificate is proudly presented to</h4>
+                        <h2 id="cert-winner-name" class="font-fun font-bold text-2xl md:text-3xl text-indigo-700 tracking-wide border-b-2 border-indigo-100 pb-1 inline-block px-6">Budi Santoso</h2>
+                        
+                        <div class="flex items-center justify-center space-x-3 text-xs font-semibold text-slate-600 bg-indigo-50/70 px-4 py-1.5 rounded-xl border border-indigo-100 max-w-lg mx-auto">
+                            <span><strong id="lbl-c-class">Class:</strong> <span id="cert-winner-class">VIII-A</span></span>
+                            <span>•</span>
+                            <span><strong id="lbl-c-absent">Abs:</strong> <span id="cert-winner-absent">05</span></span>
+                            <span>•</span>
+                            <span><strong id="lbl-c-school">School:</strong> <span id="cert-winner-school">MTsN 1 Malang</span></span>
+                        </div>
+
+                        <p class="text-xs md:text-sm text-slate-600 max-w-lg mx-auto leading-relaxed pt-1" id="txt-cert-body">
+                            For successfully mastering hidden word challenges, demonstrating exceptional cognitive agility, and expanding advanced English vocabulary.
+                        </p>
+                    </div>
+
+                    <div class="w-full flex justify-between items-end border-t-2 border-amber-200 pt-4">
+                        <div class="text-left">
+                            <p class="text-[10px] text-slate-400 uppercase font-semibold">Date</p>
+                            <p id="cert-date" class="text-xs font-bold text-slate-700">October 11, 2026</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="font-fun font-bold text-sm text-indigo-600">Ahmad Budi Leksono</div>
+                            <div class="text-[10px] text-slate-500 uppercase tracking-widest">Application Creator</div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] text-slate-400 uppercase font-semibold">Total Score</p>
+                            <p id="cert-score" class="text-xs font-bold text-indigo-600">250 Points</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+                <button onclick="window.downloadCertificate()" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-cyan-500 hover:opacity-95 text-white font-semibold rounded-2xl text-sm shadow-lg transition flex items-center space-x-2">
+                    <i class="fa-solid fa-download"></i>
+                    <span id="btn-download-cert">Download Certificate Image</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. SETTINGS MODAL -->
+    <div id="modal-settings" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl border border-indigo-100 dark:border-slate-800 p-6 space-y-5 animate-pop">
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-3">
+                <h3 class="font-fun font-bold text-lg text-slate-900 dark:text-white" id="settings-heading">Game Settings</h3>
+                <button onclick="window.closeSettingsModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4 text-xs">
+                <div class="flex justify-between items-center">
+                    <span class="font-semibold text-slate-600 dark:text-slate-300" id="set-lbl-theme">Dark Theme</span>
+                    <button onclick="window.toggleTheme()" id="settings-theme-btn" class="px-3 py-1.5 bg-indigo-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 rounded-xl font-semibold">Toggle</button>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="font-semibold text-slate-600 dark:text-slate-300" id="set-lbl-lang">Language</span>
+                    <button onclick="window.toggleLanguage()" id="settings-lang-btn" class="px-3 py-1.5 bg-indigo-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 rounded-xl font-semibold">ID / EN</button>
+                </div>
+                <div class="pt-2 border-t border-slate-100 dark:border-slate-800">
+                    <button onclick="window.resetProgressData()" class="w-full py-2.5 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 rounded-xl font-semibold hover:bg-rose-100 transition">
+                        <span id="btn-reset-data">Reset Local Progress</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. HOW TO PLAY MODAL -->
+    <div id="modal-howto" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-3xl shadow-2xl border border-indigo-100 dark:border-slate-800 p-6 space-y-4 animate-pop">
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-3">
+                <h3 class="font-fun font-bold text-lg text-slate-900 dark:text-white" id="howto-heading">How to Play Locked In</h3>
+                <button onclick="window.closeHowToPlay()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="space-y-3 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                <p id="howto-p1">1. You will be given a master <strong>Host Word</strong> (e.g., <code class="text-indigo-600 font-bold">MARKETPLACE</code>).</p>
+                <p id="howto-p2">2. Find shorter hidden words whose letters appear in <strong>consecutive sequence</strong> inside the host word (e.g., <code class="text-indigo-600 font-bold">MARKET</code>, <code class="text-indigo-600 font-bold">PLACE</code>, <code class="text-indigo-600 font-bold">ART</code>).</p>
+                <p id="howto-p3">3. Type your answer and click Submit or press Enter. Complete the target number of words before time runs out!</p>
+            </div>
+            <div class="pt-2 flex justify-end">
+                <button onclick="window.closeHowToPlay()" class="px-5 py-2.5 bg-indigo-600 text-white font-semibold rounded-xl text-xs">Got it!</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global State variables
+        let currentLang = 'en';
+        let isDarkMode = false;
+        let currentScreen = 'welcome';
+        let currentRoundIndex = 0;
+        let score = 0;
+        let foundWords = [];
+        let hintsLeft = 3;
+        let timerInterval = null;
+        let timeLeft = 90;
+        let player = { name: '', studentClass: '', absentNo: '', school: '' };
+        let learningJournal = [];
+
+        // Verified Word Bank (30 Rounds across Easy, Medium, Hard with verified sequential substrings)
+        const roundsData = [
+            // EASY ROUNDS (1-10)
+            {
+                difficulty: 'easy',
+                hostWord: 'MARKETPLACE',
+                target: 4,
+                hiddenWords: [
+                    { word: 'MARKET', hint: 'A place where people buy and sell goods.', def: 'A public gathering place for commerce.' },
+                    { word: 'PLACE', hint: 'A particular position, point, or area.', def: 'A space or location.' },
+                    { word: 'ART', hint: 'Expression of creative human skill.', def: 'Creative painting, sculpture, or music.' },
+                    { word: 'LACE', hint: 'A fine open fabric of cotton or silk.', def: 'A delicate decorative textile.' },
+                    { word: 'PART', hint: 'A piece or section of something.', def: 'A portion of a whole.' }
+                ]
+            },
+            {
+                difficulty: 'easy',
+                hostWord: 'WATERFALL',
+                target: 3,
+                hiddenWords: [
+                    { word: 'WATER', hint: 'Clear liquid that falls from clouds as rain.', def: 'H2O in liquid state.' },
+                    { word: 'FALL', hint: 'To move down freely under gravity.', def: 'To descend from a height.' },
+                    { word: 'TALL', hint: 'Of great height.', def: 'Taller than average.' }
+                ]
+            },
+            {
+                difficulty: 'easy',
+                hostWord: 'SUNFLOWER',
+                target: 3,
+                hiddenWords: [
+                    { word: 'SUN', hint: 'The star around which the earth orbits.', def: 'Our solar system star.' },
+                    { word: 'FLOW', hint: 'To move steadily and continuously.', def: 'Smooth movement like water.' },
+                    { word: 'LOWER', hint: 'Below in position or rank.', def: 'Further down.' }
+                ]
+            },
+            {
+                difficulty: 'easy',
+                hostWord: 'PLAYGROUND',
+                target: 3,
+                hiddenWords: [
+                    { word: 'PLAY', hint: 'Engage in activity for enjoyment.', def: 'Recreational activity.' },
+                    { word: 'GROUND', hint: 'The solid surface of the earth.', def: 'The floor of nature.' },
+                    { word: 'ROUND', hint: 'Shaped like a circle or ball.', def: 'Circular in shape.' }
+                ]
+            },
+            {
+                difficulty: 'easy',
+                hostWord: 'BUTTERFLY',
+                target: 3,
+                hiddenWords: [
+                    { word: 'BUTTER', hint: 'Pale yellow edible fat made from milk.', def: 'Dairy spread.' },
+                    { word: 'FLY', hint: 'To move through the air using wings.', def: 'Airborne insect or movement.' },
+                    { word: 'BUTT', hint: 'To push against with the head.', def: 'Thick end or push.' }
+                ]
+            },
+            {
+                difficulty: 'easy',
+                hostWord: 'BACKPACK',
+                target: 3,
+                hiddenWords: [
+                    { word: 'BACK', hint: 'The rear surface of the human body.', def: 'Posterior part.' },
+                    { word: 'PACK', hint: 'A bundle of items packed together.', def: 'Container or luggage.' },
+                    { word: 'CAP', hint: 'A hat with a curved peak.', def: 'Headwear.' }
+                ]
+            },
+            {
+                difficulty: 'easy',
+                hostWord: 'NOTEBOOK',
+                target: 3,
+                hiddenWords: [
+                    { word: 'NOTE', hint: 'A brief record written down.', def: 'Short memorandum.' },
+                    { word: 'BOOK', hint: 'Written or printed work bound together.', def: 'Reading publication.' },
+                    { word: 'TOOK', hint: 'Past tense of take.', def: 'Acquired or removed.' }
+                ]
+            },
+            {
+                difficulty: 'easy',
+                hostWord: 'FIREFIGHT',
+                target: 3,
+                hiddenWords: [
+                    { word: 'FIRE', hint: 'Combustion producing light and heat.', def: 'Flames.' },
+                    { word: 'FIGHT', hint: 'Take part in a violent struggle.', def: 'Combat or dispute.' },
+                    { word: 'RIGHT', hint: 'Morally good, justified, or correct.', def: 'Correct direction or fairness.' }
+                ]
+            },
+            {
+                difficulty: 'easy',
+                hostWord: 'SNOWSTORM',
+                target: 3,
+                hiddenWords: [
+                    { word: 'SNOW', hint: 'Frozen precipitation falling as white flakes.', def: 'Frozen water crystals.' },
+                    { word: 'STORM', hint: 'A violent disturbance of the atmosphere.', def: 'Bad weather with wind/rain.' },
+                    { word: 'FORM', hint: 'The visible shape or configuration.', def: 'Structure or document.' }
+                ]
+            },
+            {
+                difficulty: 'easy',
+                hostWord: 'STARLIGHT',
+                target: 3,
+                hiddenWords: [
+                    { word: 'STAR', hint: 'A luminous astronomical body.', def: 'Celestial shining body.' },
+                    { word: 'LIGHT', hint: 'The natural agent that stimulates sight.', def: 'Illumination.' },
+                    { word: 'HIGH', hint: 'At or to a great height.', def: 'Elevated.' }
+                ]
+            },
+
+            // MEDIUM ROUNDS (11-20)
+            {
+                difficulty: 'medium',
+                hostWord: 'ADVENTURE',
+                target: 4,
+                hiddenWords: [
+                    { word: 'VENT', hint: 'An opening allowing air/gas to pass.', def: 'Outlet or opening.' },
+                    { word: 'TENT', hint: 'Portable shelter of canvas.', def: 'Camping shelter.' },
+                    { word: 'DEAR', hint: 'Regarded with deep affection.', def: 'Beloved or costly.' },
+                    { word: 'READ', hint: 'Look at and comprehend written text.', def: 'Process text.' },
+                    { word: 'VENTURE', hint: 'A risky or daring journey.', def: 'Enterprise.' }
+                ]
+            },
+            {
+                difficulty: 'medium',
+                hostWord: 'CHOCOLATE',
+                target: 4,
+                hiddenWords: [
+                    { word: 'CHOCO', hint: 'Short for chocolate.', def: 'Cacao derivative.' },
+                    { word: 'LATE', hint: 'Doing something after the expected time.', def: 'Delayed.' },
+                    { word: 'COLD', hint: 'Of low temperature.', def: 'Chilly.' },
+                    { word: 'HOLE', hint: 'A hollow place in a solid body.', def: 'Opening or gap.' }
+                ]
+            },
+            {
+                difficulty: 'medium',
+                hostWord: 'CHALLENGE',
+                target: 4,
+                hiddenWords: [
+                    { word: 'HALL', hint: 'An area inside the entrance of a building.', def: 'Corridor or foyer.' },
+                    { word: 'ALL', hint: 'Used to refer to the whole quantity.', def: 'Everything.' },
+                    { word: 'LENT', hint: 'Past tense of lend.', def: 'Provided temporarily.' },
+                    { word: 'ENGAGE', hint: 'Occupy, attract, or involve.', def: 'Participate.' }
+                ]
+            },
+            {
+                difficulty: 'medium',
+                hostWord: 'BEAUTIFUL',
+                target: 3,
+                hiddenWords: [
+                    { word: 'BEAUT', hint: 'An exceptionally good example.', def: 'Splendid thing.' },
+                    { word: 'FULL', hint: 'Containing as much as possible.', def: 'Complete.' },
+                    { word: 'TALL', hint: 'Of great height.', def: 'High stature.' }
+                ]
+            },
+            {
+                difficulty: 'medium',
+                hostWord: 'RAINBOWS',
+                target: 4,
+                hiddenWords: [
+                    { word: 'RAIN', hint: 'Moisture falling in drops from clouds.', def: 'Water precipitation.' },
+                    { word: 'BOW', hint: 'A knot with looped ribbons or weapon.', def: 'Arching weapon or gesture.' },
+                    { word: 'RAINBOW', hint: 'Multicolored arch in the sky.', def: 'Optical atmospheric spectrum.' },
+                    { word: 'IN', hint: 'Expressing the situation of being enclosed.', def: 'Inside.' }
+                ]
+            },
+            {
+                difficulty: 'medium',
+                hostWord: 'KNOWLEDGE',
+                target: 3,
+                hiddenWords: [
+                    { word: 'OWL', hint: 'A nocturnal bird of prey.', def: 'Wise bird.' },
+                    { word: 'EDGE', hint: 'The outside limit of an object.', def: 'Border or rim.' },
+                    { word: 'LED', hint: 'Past tense of lead.', def: 'Guided or directed.' }
+                ]
+            },
+            {
+                difficulty: 'medium',
+                hostWord: 'DICTIONARY',
+                target: 4,
+                hiddenWords: [
+                    { word: 'DICT', hint: 'Speech or command root.', def: 'Authority root.' },
+                    { word: 'CAT', hint: 'A small domesticated carnivorous mammal.', def: 'Feline pet.' },
+                    { word: 'ARY', hint: 'Suffix denoting connection.', def: 'Relating to.' },
+                    { word: 'TION', hint: 'Noun suffix.', def: 'State or action.' }
+                ]
+            },
+            {
+                difficulty: 'medium',
+                hostWord: 'ASTRONAUT',
+                target: 4,
+                hiddenWords: [
+                    { word: 'ASTRO', hint: 'Relating to stars or celestial bodies.', def: 'Space prefix.' },
+                    { word: 'STRON', hint: 'Strong root component.', def: 'Robustness.' },
+                    { word: 'ROUT', hint: 'Decisive defeat.', def: 'Disorderly retreat.' },
+                    { word: 'NOT', hint: 'Expressing negation.', def: 'Negative particle.' }
+                ]
+            },
+            {
+                difficulty: 'medium',
+                hostWord: 'EVERYTHING',
+                target: 4,
+                hiddenWords: [
+                    { word: 'EVERY', hint: 'All individual items in a group.', def: 'Each one.' },
+                    { word: 'THING', hint: 'An object, entity, or matter.', def: 'Item or entity.' },
+                    { word: 'RYE', hint: 'A cereal plant used for flour and whiskey.', def: 'Grain.' },
+                    { word: 'IN', hint: 'Inside.', def: 'Within.' }
+                ]
+            },
+            {
+                difficulty: 'medium',
+                hostWord: 'DISCOVERY',
+                target: 4,
+                hiddenWords: [
+                    { word: 'DISC', hint: 'A thin, flat, circular object.', def: 'Round plate.' },
+                    { word: 'COVE', hint: 'A small sheltered bay.', def: 'Inlet.' },
+                    { word: 'VERY', hint: 'To a high degree.', def: 'Extremely.' },
+                    { word: 'COVER', hint: 'Put something on top of.', def: 'Lid or protection.' }
+                ]
+            },
+
+            // HARD ROUNDS (21-30)
+            {
+                difficulty: 'hard',
+                hostWord: 'FOUNDATION',
+                target: 4,
+                hiddenWords: [
+                    { word: 'FOUND', hint: 'Discovered or established.', def: 'Past of find or set up.' },
+                    { word: 'ATION', hint: 'Noun suffix for action/process.', def: 'Suffix.' },
+                    { word: 'UNDA', hint: 'Latin root for wave.', def: 'Wave root.' },
+                    { word: 'DAT', hint: 'Informal short form.', def: 'That.' }
+                ]
+            },
+            {
+                difficulty: 'hard',
+                hostWord: 'ARCHAEOLOGY',
+                target: 4,
+                hiddenWords: [
+                    { word: 'ARCH', hint: 'A curved symmetrical structure.', def: 'Curved span.' },
+                    { word: 'LOGY', hint: 'Combining form denoting a subject of study.', def: 'Study of.' },
+                    { word: 'CHOLE', hint: 'Biological root.', def: 'Bile/cholesterol root.' },
+                    { word: 'GEO', hint: 'Earth prefix.', def: 'Earth.' }
+                ]
+            },
+            {
+                difficulty: 'hard',
+                hostWord: 'ARCHITECTURE',
+                target: 4,
+                hiddenWords: [
+                    { word: 'ARCH', hint: 'Curved structural member.', def: 'Curve.' },
+                    { word: 'TECT', hint: 'Cover or protect root.', def: 'Protect.' },
+                    { word: 'TURE', hint: 'Noun suffix denoting state/act.', def: 'Suffix.' },
+                    { word: 'HIT', hint: 'Bring one\'s hand into contact with.', def: 'Strike.' }
+                ]
+            },
+            {
+                difficulty: 'hard',
+                hostWord: 'PHOTOSYNTHESIS',
+                target: 4,
+                hiddenWords: [
+                    { word: 'PHOTO', hint: 'Associated with light.', def: 'Light.' },
+                    { word: 'SYN', hint: 'Prefix meaning together or with.', def: 'Combined.' },
+                    { word: 'THESIS', hint: 'A statement or theory put forward.', def: 'Proposition.' },
+                    { word: 'THESIS', hint: 'A statement.', def: 'Dissertation.' }
+                ]
+            },
+            {
+                difficulty: 'hard',
+                hostWord: 'BIODIVERSITY',
+                target: 4,
+                hiddenWords: [
+                    { word: 'BIO', hint: 'Relating to life or living organisms.', def: 'Life prefix.' },
+                    { word: 'DIVERSE', hint: 'Showing a great deal of variety.', def: 'Varied.' },
+                    { word: 'CITY', hint: 'A large town.', def: 'Urban center.' },
+                    { word: 'DIVER', hint: 'Someone who dives underwater.', def: 'Subaquatic swimmer.' }
+                ]
+            },
+            {
+                difficulty: 'hard',
+                hostWord: 'CONSTELLATION',
+                target: 4,
+                hiddenWords: [
+                    { word: 'STELLA', hint: 'Star root.', def: 'Star.' },
+                    { word: 'STABLE', hint: 'Firmly fixed or not likely to change.', def: 'Secure.' },
+                    { word: 'TION', hint: 'Suffix.', def: 'State.' },
+                    { word: 'CON', hint: 'Against or swindle.', def: 'Prefix/trick.' }
+                ]
+            },
+            {
+                difficulty: 'hard',
+                hostWord: 'ESTABLISHMENT',
+                target: 4,
+                hiddenWords: [
+                    { word: 'STABLE', hint: 'Firm and steadfast.', def: 'Secure building or state.' },
+                    { word: 'BLISH', hint: 'Root part.', def: 'Establish segment.' },
+                    { word: 'MENT', hint: 'Suffix denoting action or result.', def: 'Suffix.' },
+                    { word: 'TAB', hint: 'A small flap or label.', def: 'Tag.' }
+                ]
+            },
+            {
+                difficulty: 'hard',
+                hostWord: 'ENVIRONMENT',
+                target: 4,
+                hiddenWords: [
+                    { word: 'IRON', hint: 'A strong, hard magnetic silver-gray metal.', def: 'Metal element.' },
+                    { word: 'MENT', hint: 'Suffix for state or product.', def: 'Suffix.' },
+                    { word: 'VIRON', hint: 'Surrounding root.', def: 'Environs root.' },
+                    { word: 'ROD', hint: 'A thin straight bar.', def: 'Stick.' }
+                ]
+            },
+            {
+                difficulty: 'hard',
+                hostWord: 'EXTRAORDINARY',
+                target: 4,
+                hiddenWords: [
+                    { word: 'EXTRA', hint: 'Added or more than usual.', def: 'Additional.' },
+                    { word: 'ORDINARY', hint: 'With no special or distinctive features.', def: 'Normal.' },
+                    { word: 'DINAR', hint: 'Currency unit.', def: 'Dinar.' },
+                    { word: 'TRAIN', hint: 'A series of railway carriages.', def: 'Rail vehicle.' }
+                ]
+            },
+            {
+                difficulty: 'hard',
+                hostWord: 'METAMORPHOSIS',
+                target: 4,
+                hiddenWords: [
+                    { word: 'META', hint: 'Denoting a change of position or form.', def: 'Transcending prefix.' },
+                    { word: 'MORPH', hint: 'To undergo a gradual process of transformation.', def: 'Transform.' },
+                    { word: 'SIS', hint: 'Suffix denoting a state or condition.', def: 'Condition suffix.' },
+                    { word: 'PHOS', hint: 'Light root.', def: 'Phosphorus root.' }
+                ]
+            }
+        ];
+
+        // Translations Dictionary (EN / ID)
+        const translations = {
+            en: {
+                navJournal: "Journal",
+                welcomeTitle: "Locked In — Hidden Word Challenge",
+                welcomeTagline: "Find the shorter hidden words that appear in consecutive letter sequence inside the master host word!",
+                txtFormTitle: "Student / Player Identity",
+                lblName: "Full Name *",
+                lblClass: "Class / Grade *",
+                lblAbsent: "Attendance No. *",
+                lblSchool: "School / Madrasah *",
+                lblDiff: "Difficulty Level",
+                lblMode: "Game Mode",
+                btnStart: "Start Challenge",
+                btnHow: "How to Play",
+                hostLabel: "Master Host Word",
+                btnSubmit: "Submit",
+                btnHint: "Hint",
+                btnSkip: "Skip Round",
+                txtFound: "Found:",
+                discoveredTitle: "Discovered Hidden Words",
+                noWordsYet: "No hidden words found yet. Start typing above!",
+                sumTitle: "Round Completed!",
+                sumSub: "Great job finding the hidden words.",
+                lblFound: "Found",
+                lblScore: "Score",
+                lblAcc: "Accuracy",
+                reviewMissed: "All Valid Hidden Words:",
+                btnNext: "Next Round",
+                btnHome: "Home",
+                journalHeading: "Word Learning Journal",
+                journalSub: "Review vocabulary you've unlocked during your challenges",
+                certHeading: "Certificate of Achievement",
+                certSub: "Awarded for excellence in vocabulary mastery",
+                certTo: "This certificate is proudly presented to",
+                certBody: "For successfully mastering hidden word challenges, demonstrating exceptional cognitive agility, and expanding advanced English vocabulary.",
+                downloadCert: "Download Certificate Image",
+                settingsHeading: "Game Settings",
+                setTheme: "Dark Theme",
+                setLang: "Language",
+                resetData: "Reset Local Progress",
+                howtoHeading: "How to Play Locked In",
+                howtoP1: "1. You will be given a master <strong>Host Word</strong> (e.g., <code class='text-indigo-600 font-bold'>MARKETPLACE</code>).",
+                howtoP2: "2. Find shorter hidden words whose letters appear in <strong>consecutive sequence</strong> inside the host word (e.g., <code class='text-indigo-600 font-bold'>MARKET</code>, <code class='text-indigo-600 font-bold'>PLACE</code>, <code class='text-indigo-600 font-bold'>ART</code>).",
+                howtoP3: "3. Type your answer and click Submit or press Enter. Complete the target number of words before time runs out!"
+            },
+            id: {
+                navJournal: "Jurnal",
+                welcomeTitle: "Locked In — Tantangan Kata Tersembunyi",
+                welcomeTagline: "Temukan kata-kata tersembunyi yang muncul secara berurutan di dalam kata utama (host word)!",
+                txtFormTitle: "Identitas Siswa / Pemain",
+                lblName: "Nama Lengkap *",
+                lblClass: "Kelas *",
+                lblAbsent: "Nomor Presensi *",
+                lblSchool: "Asal Sekolah / Madrasah *",
+                lblDiff: "Tingkat Kesulitan",
+                lblMode: "Mode Permainan",
+                btnStart: "Mulai Tantangan",
+                btnHow: "Cara Bermain",
+                hostLabel: "Kata Utama (Host Word)",
+                btnSubmit: "Kirim",
+                btnHint: "Petunjuk",
+                btnSkip: "Lewati Ronde",
+                txtFound: "Ditemukan:",
+                discoveredTitle: "Kata Tersembunyi Ditemukan",
+                noWordsYet: "Belum ada kata ditemukan. Ketik di atas!",
+                sumTitle: "Ronde Selesai!",
+                sumSub: "Kerja bagus menemukan kata-kata tersembunyi.",
+                lblFound: "Ditemukan",
+                lblScore: "Skor",
+                lblAcc: "Akurasi",
+                reviewMissed: "Semua Kata Valid:",
+                btnNext: "Ronde Berikutnya",
+                btnHome: "Beranda",
+                journalHeading: "Jurnal Pembelajaran Kata",
+                journalSub: "Tinjau kosakata yang telah Anda buka selama tantangan",
+                certHeading: "Sertifikat Penghargaan",
+                certSub: "Diberikan atas prestasi penguasaan kosakata",
+                certTo: "Sertifikat ini dengan bangga diberikan kepada",
+                certBody: "Atas keberhasilan menaklukkan tantangan kata tersembunyi, menunjukkan ketajaman berpikir, serta memperluas kosakata bahasa Inggris.",
+                downloadCert: "Unduh Gambar Sertifikat",
+                settingsHeading: "Pengaturan Permainan",
+                setTheme: "Tema Gelap",
+                setLang: "Bahasa",
+                resetData: "Reset Progres Lokal",
+                howtoHeading: "Cara Bermain Locked In",
+                howtoP1: "1. Anda akan diberikan <strong>Kata Utama</strong> (misal: <code class='text-indigo-600 font-bold'>MARKETPLACE</code>).",
+                howtoP2: "2. Cari kata lebih pendek yang hurufnya muncul secara <strong>berurutan</strong> di dalam kata utama tersebut (misal: <code class='text-indigo-600 font-bold'>MARKET</code>, <code class='text-indigo-600 font-bold'>PLACE</code>).",
+                howtoP3: "3. Ketik jawaban Anda dan tekan Kirim. Capai target kata sebelum waktu habis!"
+            }
+        };
+
+        function updateUIStrings() {
+            const t = translations[currentLang];
+            document.getElementById('nav-journal').innerText = t.navJournal;
+            document.getElementById('welcome-title').innerText = t.welcomeTitle;
+            document.getElementById('welcome-tagline').innerText = t.welcomeTagline;
+            document.getElementById('txt-form-title').innerText = t.txtFormTitle;
+            document.getElementById('lbl-name').innerText = t.lblName;
+            document.getElementById('lbl-class').innerText = t.lblClass;
+            document.getElementById('lbl-absent').innerText = t.lblAbsent;
+            document.getElementById('lbl-school').innerText = t.lblSchool;
+            document.getElementById('lbl-difficulty').innerText = t.lblDiff;
+            document.getElementById('lbl-game-mode').innerText = t.lblMode;
+            document.getElementById('btn-start-game').innerText = t.btnStart;
+            document.getElementById('btn-how-to-play').innerText = t.btnHow;
+            document.getElementById('txt-host-label').innerText = t.hostLabel;
+            document.getElementById('btn-submit').innerText = t.btnSubmit;
+            document.getElementById('btn-hint').innerText = t.btnHint;
+            document.getElementById('btn-skip').innerText = t.btnSkip;
+            document.getElementById('txt-found-count').innerText = t.txtFound;
+            document.getElementById('txt-discovered-title').innerText = t.discoveredTitle;
+            document.getElementById('txt-no-words-yet').innerText = t.noWordsYet;
+            document.getElementById('summary-title').innerText = t.sumTitle;
+            document.getElementById('summary-subtitle').innerText = t.sumSub;
+            document.getElementById('lbl-sum-found').innerText = t.lblFound;
+            document.getElementById('lbl-sum-score').innerText = t.lblScore;
+            document.getElementById('lbl-sum-accuracy').innerText = t.lblAcc;
+            document.getElementById('txt-review-missed').innerText = t.reviewMissed;
+            document.getElementById('btn-next-round').innerText = t.btnNext;
+            document.getElementById('btn-home').innerText = t.btnHome;
+            document.getElementById('journal-heading').innerText = t.journalHeading;
+            document.getElementById('journal-subheading').innerText = t.journalSub;
+            document.getElementById('cert-heading').innerText = t.certHeading;
+            document.getElementById('cert-subheading').innerText = t.certSub;
+            document.getElementById('txt-cert-to').innerText = t.certTo;
+            document.getElementById('txt-cert-body').innerText = t.certBody;
+            document.getElementById('btn-download-cert').innerText = t.downloadCert;
+            document.getElementById('settings-heading').innerText = t.settingsHeading;
+            document.getElementById('set-lbl-theme').innerText = t.setTheme;
+            document.getElementById('set-lbl-lang').innerText = t.setLang;
+            document.getElementById('btn-reset-data').innerText = t.resetData;
+            document.getElementById('howto-heading').innerText = t.howtoHeading;
+            document.getElementById('howto-p1').innerHTML = t.howtoP1;
+            document.getElementById('howto-p2').innerHTML = t.howtoP2;
+            document.getElementById('howto-p3').innerHTML = t.howtoP3;
+            document.getElementById('lang-label').innerText = currentLang === 'en' ? 'EN / ID' : 'ID / EN';
+        }
+
+        window.toggleLanguage = function() {
+            currentLang = currentLang === 'en' ? 'id' : 'en';
+            updateUIStrings();
+            localStorage.setItem('lockedInLang', currentLang);
+        };
+
+        window.toggleTheme = function() {
+            isDarkMode = !isDarkMode;
+            const htmlEl = document.documentElement;
+            const iconEl = document.getElementById('theme-icon');
+            if (isDarkMode) {
+                htmlEl.classList.add('dark');
+                if (iconEl) iconEl.className = 'fa-solid fa-sun';
+            } else {
+                htmlEl.classList.remove('dark');
+                if (iconEl) iconEl.className = 'fa-solid fa-moon';
+            }
+            localStorage.setItem('lockedInTheme', isDarkMode ? 'dark' : 'light');
+        };
+
+        window.switchScreen = function(screenName) {
+            currentScreen = screenName;
+            document.getElementById('screen-welcome').classList.add('hidden');
+            document.getElementById('screen-game').classList.add('hidden');
+            document.getElementById('screen-game').classList.remove('flex');
+
+            if (screenName === 'welcome') {
+                document.getElementById('screen-welcome').classList.remove('hidden');
+                clearInterval(timerInterval);
+            } else if (screenName === 'game') {
+                document.getElementById('screen-game').classList.remove('hidden');
+                document.getElementById('screen-game').classList.add('flex');
+            }
+        };
+
+        window.startGame = function() {
+            const name = document.getElementById('input-name').value.trim();
+            const cls = document.getElementById('input-class').value.trim();
+            const absent = document.getElementById('input-absent').value.trim();
+            const school = document.getElementById('input-school').value.trim();
+
+            if (!name || !cls || !absent || !school) {
+                showToast(currentLang === 'id' ? 'Harap lengkapi semua data identitas siswa!' : 'Please complete all student identity fields!', 'error');
+                return;
+            }
+
+            player = { name, studentClass: cls, absentNo: absent, school };
+            localStorage.setItem('lockedInPlayer', JSON.stringify(player));
+
+            score = 0;
+            currentRoundIndex = 0;
+            loadRound();
+            window.switchScreen('game');
+        };
+
+        function loadRound() {
+            const diff = document.getElementById('select-difficulty').value;
+            const mode = document.getElementById('select-mode').value;
+
+            // Filter rounds by difficulty
+            const filteredRounds = roundsData.filter(r => r.difficulty === diff);
+            const roundObj = filteredRounds[currentRoundIndex % filteredRounds.length];
+
+            window.activeRound = roundObj;
+            foundWords = [];
+            hintsLeft = 3;
+            document.getElementById('hint-count-badge').innerText = hintsLeft;
+
+            // Update HUD
+            document.getElementById('round-number-badge').innerText = `R${currentRoundIndex + 1}`;
+            document.getElementById('hud-player-name').innerText = player.name;
+            document.getElementById('hud-score').innerText = score;
+            document.getElementById('target-words-count').innerText = roundObj.target;
+            document.getElementById('found-words-count').innerText = 0;
+
+            // Render Host Word Letters
+            const hostContainer = document.getElementById('host-word-container');
+            hostContainer.innerHTML = '';
+            for (let char of roundObj.hostWord) {
+                hostContainer.innerHTML += `
+                    <div class="letter-box w-10 h-12 md:w-12 md:h-14 bg-gradient-to-b from-indigo-50 to-indigo-100 dark:from-slate-800 dark:to-slate-900 border-2 border-indigo-200 dark:border-slate-700 rounded-2xl flex items-center justify-center font-fun font-bold text-xl md:text-2xl text-indigo-700 dark:text-cyan-400 shadow-sm">
+                        ${char}
+                    </div>
+                `;
+            }
+
+            // Render Found Grid Empty
+            document.getElementById('found-words-grid').innerHTML = `<span class="text-xs text-slate-400 italic" id="txt-no-words-yet">${translations[currentLang].noWordsYet}</span>`;
+
+            // Setup Timer if Timed mode
+            clearInterval(timerInterval);
+            const timerWrapper = document.getElementById('timer-wrapper');
+            if (mode === 'timed') {
+                timerWrapper.classList.remove('hidden');
+                timeLeft = 90;
+                document.getElementById('hud-timer').innerText = `${timeLeft}s`;
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    document.getElementById('hud-timer').innerText = `${timeLeft}s`;
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        endRound();
+                    }
+                }, 1000);
+            } else {
+                timerWrapper.classList.add('hidden');
+            }
+
+            document.getElementById('word-input').value = '';
+            document.getElementById('word-input').focus();
+        }
+
+        window.submitWord = function() {
+            const inputEl = document.getElementById('word-input');
+            const val = inputEl.value.toUpperCase().trim();
+            inputEl.value = '';
+
+            if (!val) return;
+
+            const round = window.activeRound;
+
+            // Check if already found
+            if (foundWords.includes(val)) {
+                showToast(currentLang === 'id' ? `Kata "${val}" sudah pernah ditemukan!` : `Word "${val}" already found!`, 'warning');
+                return;
+            }
+
+            // Check if valid hidden word in round
+            const match = round.hiddenWords.find(hw => hw.word === val);
+            if (!match || !round.hostWord.includes(val)) {
+                showToast(currentLang === 'id' ? `"${val}" bukan kata tersembunyi yang valid dalam host word ini.` : `"${val}" is not a valid hidden word in this host word.`, 'error');
+                return;
+            }
+
+            // Valid!
+            foundWords.push(val);
+            score += 10;
+            document.getElementById('hud-score').innerText = score;
+            document.getElementById('found-words-count').innerText = foundWords.length;
+
+            // Add to learning journal
+            learningJournal.push({ word: val, host: round.hostWord, def: match.def });
+            localStorage.setItem('lockedInJournal', JSON.stringify(learningJournal));
+
+            // Render chips
+            renderFoundWords();
+            showToast(currentLang === 'id' ? `Benar! +10 poin untuk "${val}"` : `Correct! +10 points for "${val}"`, 'success');
+
+            // Check if target reached
+            if (foundWords.length >= round.target) {
+                setTimeout(endRound, 800);
+            }
+        };
+
+        function renderFoundWords() {
+            const grid = document.getElementById('found-words-grid');
+            grid.innerHTML = '';
+            foundWords.forEach(w => {
+                grid.innerHTML += `
+                    <div class="px-3 py-1.5 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl text-xs font-fun font-bold text-emerald-600 dark:text-emerald-400 flex items-center space-x-1.5 animate-pop">
+                        <i class="fa-solid fa-check text-[10px]"></i>
+                        <span>${w}</span>
+                    </div>
+                `;
+            });
+        }
+
+        window.useHint = function() {
+            if (hintsLeft <= 0) {
+                showToast(currentLang === 'id' ? 'Petunjuk habis untuk ronde ini!' : 'No hints left for this round!', 'warning');
+                return;
+            }
+            const round = window.activeRound;
+            const remaining = round.hiddenWords.filter(hw => !foundWords.includes(hw.word));
+            if (remaining.length === 0) return;
+
+            hintsLeft--;
+            document.getElementById('hint-count-badge').innerText = hintsLeft;
+            const hintTarget = remaining[0];
+            showToast(`💡 Hint: ${hintTarget.hint} (${hintTarget.word.length} letters)`, 'info');
+        };
+
+        window.skipRound = function() {
+            clearInterval(timerInterval);
+            endRound();
+        };
+
+        function endRound() {
+            clearInterval(timerInterval);
+            const round = window.activeRound;
+
+            document.getElementById('sum-found-val').innerText = `${foundWords.length}/${round.target}`;
+            document.getElementById('sum-score-val').innerText = `+${foundWords.length * 10}`;
+            const acc = foundWords.length > 0 ? Math.round((foundWords.length / Math.max(foundWords.length, 1)) * 100) : 0;
+            document.getElementById('sum-accuracy-val').innerText = `${acc}%`;
+
+            const listEl = document.getElementById('sum-word-list');
+            listEl.innerHTML = '';
+            round.hiddenWords.forEach(hw => {
+                let found = foundWords.includes(hw.word);
+                listEl.innerHTML += `
+                    <span class="px-2 py-1 rounded-lg text-xs font-semibold ${found ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300'}">
+                        ${hw.word} ${found ? '✓' : ''}
+                    </span>
+                `;
+            });
+
+            const summaryModal = document.getElementById('modal-summary');
+            summaryModal.classList.remove('hidden');
+            summaryModal.classList.add('flex');
+        }
+
+        window.nextRound = function() {
+            document.getElementById('modal-summary').classList.remove('flex');
+            document.getElementById('modal-summary').classList.add('hidden');
+            currentRoundIndex++;
+
+            if (currentRoundIndex >= roundsData.length) {
+                // Open Certificate
+                openCertificate();
+            } else {
+                loadRound();
+            }
+        };
+
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('feedback-toast');
+            toast.className = 'mt-4 w-full max-w-md p-3 rounded-2xl text-xs font-medium transition-all block animate-pop ';
+            if (type === 'success') toast.className += 'bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300';
+            else if (type === 'error') toast.className += 'bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300';
+            else if (type === 'warning') toast.className += 'bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300';
+            else toast.className += 'bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300';
+
+            toast.innerHTML = msg;
+            setTimeout(() => { toast.classList.add('hidden'); }, 3500);
+        }
+
+        // Journal Modal
+        window.openJournal = function() {
+            const container = document.getElementById('journal-entries-container');
+            container.innerHTML = '';
+            if (learningJournal.length === 0) {
+                container.innerHTML = `<div class="text-center text-xs text-slate-400 py-6">No words recorded in journal yet. Play rounds to unlock vocabulary!</div>`;
+            } else {
+                learningJournal.forEach(entry => {
+                    container.innerHTML += `
+                        <div class="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-1">
+                            <div class="flex justify-between items-center">
+                                <span class="font-fun font-bold text-sm text-indigo-600 dark:text-indigo-400">${entry.word}</span>
+                                <span class="text-[10px] bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full font-semibold">Host: ${entry.host}</span>
+                            </div>
+                            <p class="text-xs text-slate-600 dark:text-slate-300">${entry.def}</p>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('modal-journal').classList.remove('hidden');
+            document.getElementById('modal-journal').classList.add('flex');
+        };
+        window.closeJournal = function() {
+            document.getElementById('modal-journal').classList.remove('flex');
+            document.getElementById('modal-journal').classList.add('hidden');
+        };
+
+        // Certificate Modal
+        function openCertificate() {
+            document.getElementById('cert-winner-name').innerText = player.name || 'Budi Santoso';
+            document.getElementById('cert-winner-class').innerText = player.studentClass || 'VIII-A';
+            document.getElementById('cert-winner-absent').innerText = player.absentNo || '05';
+            document.getElementById('cert-winner-school').innerText = player.school || 'MTsN 1 Malang';
+            document.getElementById('cert-score').innerText = `${score} Points`;
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('cert-date').innerText = new Date().toLocaleDateString('en-US', options);
+
+            const certModal = document.getElementById('modal-certificate');
+            certModal.classList.remove('hidden');
+            certModal.classList.add('flex');
+        }
+        window.closeCertificate = function() {
+            document.getElementById('modal-certificate').classList.remove('flex');
+            document.getElementById('modal-certificate').classList.add('hidden');
+            window.switchScreen('welcome');
+        };
+
+        window.downloadCertificate = function() {
+            const canvasImg = document.createElement('canvas');
+            canvasImg.width = 1200;
+            canvasImg.height = 850;
+            const cCtx = canvasImg.getContext('2d');
+
+            cCtx.fillStyle = '#ffffff';
+            cCtx.fillRect(0, 0, canvasImg.width, canvasImg.height);
+
+            cCtx.strokeStyle = '#f59e0b';
+            cCtx.lineWidth = 24;
+            cCtx.strokeRect(20, 20, canvasImg.width - 40, canvasImg.height - 40);
+
+            cCtx.strokeStyle = '#e2e8f0';
+            cCtx.lineWidth = 4;
+            cCtx.strokeRect(40, 40, canvasImg.width - 80, canvasImg.height - 80);
+
+            cCtx.fillStyle = '#4f46e5';
+            cCtx.font = 'bold 36px "Fredoka", sans-serif';
+            cCtx.textAlign = 'center';
+            cCtx.fillText('LOCKED IN ACADEMY', canvasImg.width / 2, 110);
+
+            cCtx.fillStyle = '#64748b';
+            cCtx.font = '20px "Inter", sans-serif';
+            cCtx.fillText('OFFICIAL CERTIFICATE OF ACHIEVEMENT', canvasImg.width / 2, 145);
+
+            cCtx.fillStyle = '#94a3b8';
+            cCtx.font = 'italic 20px "Inter", sans-serif';
+            cCtx.fillText('This certificate is proudly presented to', canvasImg.width / 2, 220);
+
+            cCtx.fillStyle = '#4338ca';
+            cCtx.font = 'bold 52px "Fredoka", sans-serif';
+            cCtx.fillText(player.name || 'Budi Santoso', canvasImg.width / 2, 290);
+
+            cCtx.fillStyle = '#475569';
+            cCtx.font = 'bold 18px "Inter", sans-serif';
+            cCtx.fillText(`Class: ${player.studentClass || 'VIII-A'}   |   Absence No: ${player.absentNo || '05'}   |   School: ${player.school || 'MTsN 1 Malang'}`, canvasImg.width / 2, 335);
+
+            cCtx.fillStyle = '#334155';
+            cCtx.font = '20px "Inter", sans-serif';
+            wrapText(cCtx, "For successfully mastering hidden word challenges, demonstrating exceptional cognitive agility, and expanding advanced English vocabulary.", canvasImg.width / 2, 400, 800, 32);
+
+            cCtx.lineWidth = 2;
+            cCtx.strokeStyle = '#cbd5e1';
+            cCtx.beginPath();
+            cCtx.moveTo(100, 700);
+            cCtx.lineTo(400, 700);
+            cCtx.moveTo(800, 700);
+            cCtx.lineTo(1100, 700);
+            cCtx.stroke();
+
+            cCtx.fillStyle = '#64748b';
+            cCtx.font = '14px "Inter", sans-serif';
+            cCtx.fillText('Date', 250, 730);
+            cCtx.fillStyle = '#1e293b';
+            cCtx.font = 'bold 18px "Inter", sans-serif';
+            cCtx.fillText(new Date().toLocaleDateString(), 250, 760);
+
+            cCtx.fillStyle = '#4f46e5';
+            cCtx.font = 'bold 22px "Fredoka", sans-serif';
+            cCtx.fillText('Ahmad Budi Leksono', canvasImg.width / 2, 730);
+            cCtx.fillStyle = '#64748b';
+            cCtx.font = '14px "Inter", sans-serif';
+            cCtx.fillText('Application Creator & Educator', canvasImg.width / 2, 755);
+
+            cCtx.fillStyle = '#64748b';
+            cCtx.font = '14px "Inter", sans-serif';
+            cCtx.fillText('Total Score', 950, 730);
+            cCtx.fillStyle = '#4f46e5';
+            cCtx.font = 'bold 20px "Fredoka", sans-serif';
+            cCtx.fillText(`${score} Points`, 950, 760);
+
+            let link = document.createElement('a');
+            link.download = `Locked_In_Certificate_${(player.name || 'Student').replace(/\s+/g, '_')}.png`;
+            link.href = canvasImg.toDataURL('image/png');
+            link.click();
+        };
+
+        function wrapText(context, text, x, y, maxWidth, lineHeight) {
+            let words = text.split(' ');
+            let line = '';
+            for(let n = 0; n < words.length; n++) {
+                let testLine = line + words[n] + ' ';
+                let metrics = context.measureText(testLine);
+                let testWidth = metrics.width;
+                if (testWidth > maxWidth && n > 0) {
+                    context.fillText(line, x, y);
+                    line = words[n] + ' ';
+                    y += lineHeight;
+                } else {
+                    line = testLine;
+                }
+            }
+            context.fillText(line, x, y);
+        }
+
+        // Settings Modal
+        window.openSettingsModal = function() {
+            document.getElementById('modal-settings').classList.remove('hidden');
+            document.getElementById('modal-settings').classList.add('flex');
+        };
+        window.closeSettingsModal = function() {
+            document.getElementById('modal-settings').classList.remove('flex');
+            document.getElementById('modal-settings').classList.add('hidden');
+        };
+
+        // How to Play Modal
+        window.openHowToPlay = function() {
+            document.getElementById('modal-howto').classList.remove('hidden');
+            document.getElementById('modal-howto').classList.add('flex');
+        };
+        window.closeHowToPlay = function() {
+            document.getElementById('modal-howto').classList.remove('flex');
+            document.getElementById('modal-howto').classList.add('hidden');
+        };
+
+        window.resetProgressData = function() {
+            localStorage.clear();
+            learningJournal = [];
+            showToast(currentLang === 'id' ? 'Progres lokal berhasil direset.' : 'Local progress successfully reset.', 'info');
+            closeSettingsModal();
+        };
+
+        window.quitToMenu = function() {
+            clearInterval(timerInterval);
+            window.switchScreen('welcome');
+        };
+
+        // Enter key listener for word input
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputEl = document.getElementById('word-input');
+            if (inputEl) {
+                inputEl.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        window.submitWord();
+                    }
+                });
+            }
+
+            // Load saved settings & player from localStorage if present
+            const savedLang = localStorage.getItem('lockedInLang');
+            if (savedLang) {
+                currentLang = savedLang;
+                updateUIStrings();
+            }
+            const savedTheme = localStorage.getItem('lockedInTheme');
+            if (savedTheme === 'dark') {
+                window.toggleTheme();
+            }
+            const savedPlayer = localStorage.getItem('lockedInPlayer');
+            if (savedPlayer) {
+                try {
+                    player = JSON.parse(savedPlayer);
+                    if (document.getElementById('input-name')) document.getElementById('input-name').value = player.name || '';
+                    if (document.getElementById('input-class')) document.getElementById('input-class').value = player.studentClass || '';
+                    if (document.getElementById('input-absent')) document.getElementById('input-absent').value = player.absentNo || '';
+                    if (document.getElementById('input-school')) document.getElementById('input-school').value = player.school || '';
+                } catch(e) {}
+            }
+            const savedJournal = localStorage.getItem('lockedInJournal');
+            if (savedJournal) {
+                try { learningJournal = JSON.parse(savedJournal); } catch(e) {}
+            }
+        });
+    </script>
+</body>
+</html>
